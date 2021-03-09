@@ -97,17 +97,23 @@ public class FootBannerView extends RelativeLayout {
     }
 
     private TTFullScreenVideoAd mttFullVideoAd;
-    private Boolean mIsLoaded;
+    private Boolean isFulllAdLoading;
     private Boolean mHasShowDownloadActive;
     public void showVedioAd(){
         JSBridge.debugTipToJs("show full screen video");
+        if(isFulllAdLoading)
+        {
+            JSBridge.showTipToJs("正在加载广告");
+            return;
+        }
+        isFulllAdLoading = true;
         TTAdNative mTTAdNative = TTAdSdk.getAdManager().createAdNative(this.mContext);
         AdSlot adSlot = new AdSlot.Builder()
                 .setCodeId("945889184")
         //模板广告需要设置期望个性化模板广告的大小,单位dp,激励视频场景，只要设置的值大于0即可
         //且仅是模板渲染的代码位ID使用，非模板渲染代码位切勿使用
-                .setExpressViewAcceptedSize(500,500)
-                .setSupportDeepLink(true)
+//                .setExpressViewAcceptedSize(500,500)
+//                .setSupportDeepLink(true)
                 .setOrientation(TTAdConstant.VERTICAL)//必填参数，期望视频的播放方向：TTAdConstant.HORIZONTAL 或 TTAdConstant.VERTICAL
                 .build();
         mTTAdNative.loadFullScreenVideoAd(adSlot, new TTAdNative.FullScreenVideoAdListener() {
@@ -121,7 +127,6 @@ public class FootBannerView extends RelativeLayout {
             @Override
             public void onFullScreenVideoAdLoad(TTFullScreenVideoAd ad) {
                 mttFullVideoAd = ad;
-                mIsLoaded = false;
                 mttFullVideoAd.setFullScreenVideoAdInteractionListener(new TTFullScreenVideoAd.FullScreenVideoAdInteractionListener() {
 
                     @Override
@@ -195,11 +200,13 @@ public class FootBannerView extends RelativeLayout {
             //广告视频本地加载完成的回调，接入方可以在这个回调后直接播放本地视频
             @Override
             public void onFullScreenVideoCached() {
-                mIsLoaded = true;
+                isFulllAdLoading = false;
+                mttFullVideoAd.showFullScreenVideoAd(MainActivity.mActivity, TTAdConstant.RitScenes.GAME_GIFT_BONUS, "");
+                mttFullVideoAd = null;
             }
         });
-
-        mttFullVideoAd.showFullScreenVideoAd(JSBridge.mMainActivity, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
-        mttFullVideoAd = null;
+//        JSBridge.debugTipToJs("MainActivity.mActivity:" + MainActivity.mActivity == null ? "true" : "false");
+//        mttFullVideoAd.showFullScreenVideoAd(MainActivity.mActivity, TTAdConstant.RitScenes.GAME_GIFT_BONUS, "");
+//        mttFullVideoAd = null;
     }
 }

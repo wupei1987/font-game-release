@@ -39,6 +39,7 @@ public class MainActivity extends Activity{
     boolean isExit=false;
     public static SplashDialog mSplashDialog;
     public static FootBannerView mFootBannerView;
+    public static Activity mActivity;
     @Override    
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class MainActivity extends Activity{
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         JSBridge.mMainActivity = this;
+        MainActivity.mActivity = this;
         mSplashDialog = new SplashDialog(this);
         mSplashDialog.showSplash();
         /*
